@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    
+    <!-- CSS Styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2em;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .recipe-container {
+            margin-top: 20px;
+        }
+
+        .recipe-card {
+            background-color: #fff;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .recipe-card h3 {
+            font-size: 1.5em;
+        }
+
+        .recipe-card p {
+            font-size: 1.1em;
+        }
+
+        .recipe-card ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .recipe-card ul li {
+            font-size: 1em;
+            padding: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Recipe Finder</h1>
+        <input type="text" id="search-input" placeholder="Enter ingredient (e.g., chicken)">
+        <button onclick="fetchRecipes()">Search Recipes</button>
+
+        <div id="recipe-container" class="recipe-container">
+            <!-- Recipes will be displayed here -->
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        const apiKey = 'YOUR_EDAMAM_API_KEY';  // Replace with your Edamam API Key
+        const apiUrl = 'https://api.edamam.com/api/recipes/v2';
+
+        async function fetchRecipes() {
+            const query = document.getElementById('search-input').value;
+            if (!query) {
+                alert('Please enter an ingredient!');
+                return;
+            }
+
+            const url = `${apiUrl}?type=public&q=${query}&app_id=YOUR_EDAMAM_APP_ID&app_key=${apiKey}`;
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (data.hits.length === 0) {
+                    document.getElementById('recipe-container').innerHTML = '<p>No recipes found!</p>';
+                    return;
+                }
+
+                displayRecipes(data.hits);
+            } catch (error) {
+                console.error('Error fetching recipes:', error);
+                document.getElementById('recipe-container').innerHTML = '<p>Error fetching recipes. Please try again later.</p>';
+            }
+        }
+
+        function displayRecipes(recipes) {
+            const container = document.getElementById('recipe-container');
+            container.innerHTML = '';  // Clear previous results
+
+            recipes.forEach(recipeObj => {
+                const recipe = recipeObj.recipe;
+
+                const recipeCard = document.createElement('div');
+                recipeCard.classList.add('recipe-card');
+
+                const recipeTitle = document.createElement('h3');
+                recipeTitle.textContent = recipe.label;
+                recipeCard.appendChild(recipeTitle);
+
+                const recipeImage = document.createElement('img');
+                recipeImage.src = recipe.image;
+                recipeImage.alt = recipe.label;
+                recipeImage.style.width = '100%';
+                recipeCard.appendChild(recipeImage);
+
+                const ingredientsList = document.createElement('ul');
+                recipe.ingredientLines.forEach(ingredient => {
+                    const ingredientItem = document.createElement('li');
+                    ingredientItem.textContent = ingredient;
+                    ingredientsList.appendChild(ingredientItem);
+                });
+                recipeCard.appendChild(ingredientsList);
+
+                const instructions = document.createElement('p');
+                instructions.textContent = `Source: ${recipe.source}`;
+                recipeCard.appendChild(instructions);
+
+                container.appendChild(recipeCard);
+            });
+        }
+    </script>
+
+</body>
+</html>
