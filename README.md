@@ -4,6 +4,7 @@ ID:CT08DIF
 DOMAIN:FRONTEND WEB DEVELOPMENT
 DURATION:DEC 12TH,2024 TO JAN 12TH,2025
 Overview of the Recipe Finder Application:
+![Screenshot 2024-12-28 210242](https://github.com/user-attachments/assets/e15ab981-cd81-4f97-a814-4fdf4693379d)
 
 The Recipe Finder application is a simple web app that allows users to search for recipes based on ingredients. It fetches recipe data from the Edamam Recipe API, displays detailed recipe information, and shows a list of ingredients and instructions for each recipe. The app uses HTML, CSS, and JavaScript to provide a seamless user experience.
 Key Features:
